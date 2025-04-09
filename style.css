@@ -72,6 +72,7 @@ button:focus {
 
 .settings.hide {
   transform: translateY(-100%);
+  display: none;
 }
 
 .difficulty {
@@ -116,7 +117,7 @@ input {
   width: 300px;
   padding: 12px 20px;
   margin-top: 7px;
-  
+
 }
 
 .score-container {

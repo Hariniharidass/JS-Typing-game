@@ -88,9 +88,19 @@ let randomWord;
 let score = 0;
 
 //Initializing time
-let time=10;
-
+let time = 10;
+//Initializing timeInterval
 let timeInterval;
+
+text.focus();
+text.addEventListener("keypress", function (event) {
+  // If the user presses the "Enter" key on the keyboard
+  if (event.key === "Enter") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    updateScore();
+  }
+});
 
 function addWordToDOM() {
   console.log("time : " + time);
@@ -119,14 +129,17 @@ function updateScore() {
   }
 }
 
-function check() {
-  updateScore();
-}
+
 
 function gameOver() {
   // clear the interal
+  clearInterval(timeInterval);
+  console.log(timeInterval);
+  timeInterval = 0;
+  restartGame();
 
-  console.log("game over");
+}
+function restartGame() {
   endgameEl.style.setProperty("display", "block");
 
   var gameOverText = document.createElement("h1");
@@ -145,18 +158,29 @@ function gameOver() {
     location.reload();
   };
   endgameEl.appendChild(button);
-
 }
+
 function updateTime() {
   if (time == 0) {
+    time = -1;
     gameOver();
   }
-  console.log("time : " + time);
-  timeEl.innerHTML = (time - 1) + "s";
-  time = time - 1;
-
+  else if (time > 0) {
+    console.log("time : " + time);
+    timeEl.innerHTML = (time - 1) + "s";
+    time -= 1;
+  }
 }
 
-addWordToDOM();
 
-text.focus();
+settingsBtn.addEventListener("click", displaySetting);
+function displaySetting() {
+  settings.style.removeProperty("display", "none");
+  settings.classList.toggle("hide");
+};
+
+window.onload = function () {
+  addWordToDOM();
+  settings.style.setProperty("display", "none");
+};
+
