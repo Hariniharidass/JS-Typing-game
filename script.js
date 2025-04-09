@@ -90,8 +90,14 @@ let score = 0;
 //Initializing time
 let time = 10;
 
+/* window.setInterval(function () {
+  timeEl.innerHTML = (time - 1) + "s";
+  if (time === 0) {
+    clearInterval(interval); // Stopping the counter when reaching 0.
+  }
+}, 1000); */
 function addWordToDOM() {
-  updateTime();
+  window.setInterval(updateTime, 1000);
   let wordsLength = words.length;
   randomWord = words[(Math.floor(Math.random() * wordsLength) + 1)];
   console.log(randomWord);
@@ -112,22 +118,17 @@ function updateScore() {
 function check() {
   updateScore();
 }
-function updateTime() {
+function gameOver() {
   console.log("game over");
 }
 function updateTime() {
-
-  setInterval(function () {
-    while (time > 0) {
-      timeEl.innerHTML = (time - 1) + "s";
-    }
-    if (time === 0)
-      gameOver();
-
-  }, 1000);
-
-
-
+  timeEl.innerHTML = (time - 1) + "s";
+  time = time - 1;
+  if (time === 0) {
+    timeEl.innerHTML = 0 + "s";
+    gameOver();
+  }
 }
 
 addWordToDOM();
+
