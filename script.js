@@ -88,47 +88,75 @@ let randomWord;
 let score = 0;
 
 //Initializing time
-let time = 10;
+let time=10;
 
-/* window.setInterval(function () {
-  timeEl.innerHTML = (time - 1) + "s";
-  if (time === 0) {
-    clearInterval(interval); // Stopping the counter when reaching 0.
-  }
-}, 1000); */
+let timeInterval;
+
 function addWordToDOM() {
-  window.setInterval(updateTime, 1000);
+  console.log("time : " + time);
+  timeInterval = setInterval(updateTime, 1000);
   let wordsLength = words.length;
   randomWord = words[(Math.floor(Math.random() * wordsLength) + 1)];
-  console.log(randomWord);
   word.innerHTML = randomWord;
 }
+
 function updateScore() {
+
   inputText = text.value;
-  console.log(inputText);
   if (inputText === randomWord) {
     score = score + 1;
     scoreEl.innerHTML = score;
-    addWordToDOM();
+    console.log("time before update : " + time);
+    time = time + 5;
+    console.log("time after update : " + time);
     timeEl.innerHTML = time + 5;
     text.value = "";
+    addWordToDOM();
+  }
+  else {
+    text.value = "";
+    addWordToDOM();
   }
 }
 
 function check() {
   updateScore();
 }
+
 function gameOver() {
+  // clear the interal
+
   console.log("game over");
+  endgameEl.style.setProperty("display", "block");
+
+  var gameOverText = document.createElement("h1");
+  gameOverText.appendChild(document.createTextNode("GAME OVER!"));
+  endgameEl.style.setProperty("margin-top", "80px");
+  endgameEl.appendChild(gameOverText);
+
+  var scoreText = document.createElement("h3");
+  scoreText.appendChild(document.createTextNode("Your Score is : " + score));
+  endgameEl.appendChild(scoreText);
+
+  var button = document.createElement("button");
+  button.innerText = "Restart Game!";
+  button.className = "restartBtn";
+  button.onclick = function () {
+    location.reload();
+  };
+  endgameEl.appendChild(button);
+
 }
 function updateTime() {
-  timeEl.innerHTML = (time - 1) + "s";
-  time = time - 1;
-  if (time === 0) {
-    timeEl.innerHTML = 0 + "s";
+  if (time == 0) {
     gameOver();
   }
+  console.log("time : " + time);
+  timeEl.innerHTML = (time - 1) + "s";
+  time = time - 1;
+
 }
 
 addWordToDOM();
 
+text.focus();

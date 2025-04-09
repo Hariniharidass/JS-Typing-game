@@ -22,6 +22,18 @@ button {
   padding: 5px 15px;
 }
 
+.restartBtn {
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 32px;
+  border-radius: 5px;
+  padding: 5px 15px;
+  width: 400px;
+  height: 100px;
+  background-color: #ffde17;
+  color: #6026ff;
+}
+
 select {
   width: 200px;
   padding: 3px;
@@ -104,6 +116,7 @@ input {
   width: 300px;
   padding: 12px 20px;
   margin-top: 7px;
+  
 }
 
 .score-container {
