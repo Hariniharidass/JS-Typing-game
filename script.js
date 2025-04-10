@@ -57,7 +57,7 @@ const settings = document.getElementById("settings");
 const settingsForm = document.getElementById("settings-form");
 const settingsBtn = document.getElementById("settings-btn");
 const difficultySelect = document.getElementById("difficulty");
-
+const mainContainer = document.getElementById("container");
 // Array
 const words = [
   "dependent",
@@ -92,7 +92,41 @@ let time = 10;
 //Initializing timeInterval
 let timeInterval;
 
-text.focus();
+
+
+/**
+ *
+ * 1) Hides the settings container
+ * 2)Calls addWordToDOM
+ * 3)Starts the timer
+ * 4) Set focus to input box
+ */
+
+window.onload = function () {
+  settings.classList.toggle("hide");
+  startNewGame();
+  // Adds a restart button to reload the game
+  var startButton = document.createElement("button");
+  startButton.innerText = "New Game!";
+  startButton.className = "restartBtn";
+
+  startButton.autofocus = true;
+  startButton.onclick = function () {
+    startNewGame()
+  };
+  mainContainer.appendChild(startButton);
+};
+
+function startNewGame() {
+  timeInterval = setInterval(updateTime, 1000);
+  text.focus();
+  addWordToDOM();
+}
+/**
+ *
+ * Event listener keypress to fire the function updateScore()
+ */
+
 text.addEventListener("keypress", function (event) {
   // If the user presses the "Enter" key on the keyboard
   if (event.key === "Enter") {
@@ -102,26 +136,48 @@ text.addEventListener("keypress", function (event) {
   }
 });
 
+
+/**
+ *
+ *Sets a word from array as a randomWord
+ *
+ */
+
 function addWordToDOM() {
-  console.log("time : " + time);
-  timeInterval = setInterval(updateTime, 1000);
-  let wordsLength = words.length;
-  randomWord = words[(Math.floor(Math.random() * wordsLength) + 1)];
-  word.innerHTML = randomWord;
+  if (time <= 0) {
+    console.log("Game Over!");
+  }
+  else {
+    let wordsLength = words.length;
+    randomWord = words[(Math.floor(Math.random() * wordsLength))];
+    word.innerHTML = randomWord;
+  }
+
 }
 
-function updateScore() {
 
-  inputText = text.value;
+/**
+ * Updates score based on the answer.
+ * if no input is provided or if the input does'nt match the answer, it resets the input field to empty and calls addWordToDOM()
+ */
+
+function updateScore() {
+  inputText = text.value.toLowerCase();
   if (inputText === randomWord) {
     score = score + 1;
     scoreEl.innerHTML = score;
-    console.log("time before update : " + time);
-    time = time + 5;
-    console.log("time after update : " + time);
-    timeEl.innerHTML = time + 5;
-    text.value = "";
-    addWordToDOM();
+    if (difficultySelect.value === "hard") {
+      time = time + 2;
+    }
+    else if (difficultySelect.value === "medium") {
+      time = time + 3;
+    }
+    else if (difficultySelect.value === "easy") {
+      time = time + 5;
+      timeEl.innerHTML = time;
+      text.value = "";
+      addWordToDOM();
+    }
   }
   else {
     text.value = "";
@@ -129,58 +185,65 @@ function updateScore() {
   }
 }
 
-
-
 function gameOver() {
-  // clear the interal
+  // clear the interval
   clearInterval(timeInterval);
-  console.log(timeInterval);
   timeInterval = 0;
-  restartGame();
-
-}
-function restartGame() {
+  text.blur();
+  //Display endGame container
   endgameEl.style.setProperty("display", "block");
 
+  //Adds a h1 element with text "Game Over"
   var gameOverText = document.createElement("h1");
   gameOverText.appendChild(document.createTextNode("GAME OVER!"));
   endgameEl.style.setProperty("margin-top", "80px");
   endgameEl.appendChild(gameOverText);
 
+  // /Adds a h3 element with text displaying score
   var scoreText = document.createElement("h3");
   scoreText.appendChild(document.createTextNode("Your Score is : " + score));
   endgameEl.appendChild(scoreText);
 
+  // Adds a restart button to reload the game
   var button = document.createElement("button");
   button.innerText = "Restart Game!";
   button.className = "restartBtn";
+
+  button.autofocus = true;
   button.onclick = function () {
     location.reload();
   };
   endgameEl.appendChild(button);
 }
 
+/***
+ * Decreases time by 1 s every second
+ * if time=0, sets time to -1 and fires gameOver()
+ */
 function updateTime() {
   if (time == 0) {
-    time = -1;
+    // time = -1;
     gameOver();
   }
   else if (time > 0) {
-    console.log("time : " + time);
     timeEl.innerHTML = (time - 1) + "s";
     time -= 1;
   }
 }
 
-
+// Event listener for button click to display settings container
 settingsBtn.addEventListener("click", displaySetting);
 function displaySetting() {
-  settings.style.removeProperty("display", "none");
   settings.classList.toggle("hide");
 };
 
-window.onload = function () {
-  addWordToDOM();
-  settings.style.setProperty("display", "none");
-};
+/**
+ *
+ * Event listener keypress to fire the function updateScore()
+ */
 
+difficultySelect.addEventListener("change", function (event) {
+  console.log(difficultySelect.value);
+  addWordToDOM();
+}
+);

@@ -70,7 +70,7 @@ button:focus {
   transition: transform 0.3s ease-in-out;
 }
 
-.settings.hide {
+.hide {
   transform: translateY(-100%);
   display: none;
 }
