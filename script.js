@@ -58,6 +58,7 @@ const settingsForm = document.getElementById("settings-form");
 const settingsBtn = document.getElementById("settings-btn");
 const difficultySelect = document.getElementById("difficulty");
 const mainContainer = document.getElementById("container");
+
 // Array
 const words = [
   "dependent",
@@ -89,9 +90,12 @@ let score = 0;
 
 //Initializing time
 let time = 10;
+
 //Initializing timeInterval
 let timeInterval;
 
+///Initializing difficulty level
+let level = "easy";
 
 
 /**
@@ -104,37 +108,30 @@ let timeInterval;
 
 window.onload = function () {
   settings.classList.toggle("hide");
-  startNewGame();
-  // Adds a restart button to reload the game
-  var startButton = document.createElement("button");
-  startButton.innerText = "New Game!";
-  startButton.className = "restartBtn";
+  mainContainer.classList.toggle("hide");
 
-  startButton.autofocus = true;
-  startButton.onclick = function () {
+  var startDiv = document.createElement("div");
+  startDiv.id = 'startDiv';
+  startDiv.className = 'block';
+  document.getElementsByTagName('body')[0].appendChild(startDiv);
+
+  createTextElement("h2", "Welcome to typing game", startDiv);
+  createTextElement("h1", "Select your difficulty level from settings below, then start a new game", startDiv);
+  var button = createButton("Start a New Game!", "restartBtn", true, startDiv);
+  button.onclick = function () {
     startNewGame()
   };
-  mainContainer.appendChild(startButton);
 };
 
 function startNewGame() {
+  mainContainer.classList.toggle("hide");
+  if (startDiv.className == "block") {
+    startDiv.classList.toggle("hide");
+  }
   timeInterval = setInterval(updateTime, 1000);
   text.focus();
   addWordToDOM();
 }
-/**
- *
- * Event listener keypress to fire the function updateScore()
- */
-
-text.addEventListener("keypress", function (event) {
-  // If the user presses the "Enter" key on the keyboard
-  if (event.key === "Enter") {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    updateScore();
-  }
-});
 
 
 /**
@@ -155,9 +152,8 @@ function addWordToDOM() {
 
 }
 
-
 /**
- * Updates score based on the answer.
+ * Updates score based on the answer and difficulty level.
  * if no input is provided or if the input does'nt match the answer, it resets the input field to empty and calls addWordToDOM()
  */
 
@@ -166,18 +162,20 @@ function updateScore() {
   if (inputText === randomWord) {
     score = score + 1;
     scoreEl.innerHTML = score;
-    if (difficultySelect.value === "hard") {
+    console.log("before time : " + time);
+    if (level === "hard") {
       time = time + 2;
     }
-    else if (difficultySelect.value === "medium") {
+    else if (level === "medium") {
       time = time + 3;
     }
-    else if (difficultySelect.value === "easy") {
+    else if (level === "easy") {
       time = time + 5;
-      timeEl.innerHTML = time;
-      text.value = "";
-      addWordToDOM();
     }
+    console.log("after time : " + time);
+    timeEl.innerHTML = time;
+    text.value = "";
+    addWordToDOM();
   }
   else {
     text.value = "";
@@ -190,31 +188,22 @@ function gameOver() {
   clearInterval(timeInterval);
   timeInterval = 0;
   text.blur();
+
   //Display endGame container
   endgameEl.style.setProperty("display", "block");
 
   //Adds a h1 element with text "Game Over"
-  var gameOverText = document.createElement("h1");
-  gameOverText.appendChild(document.createTextNode("GAME OVER!"));
-  endgameEl.style.setProperty("margin-top", "80px");
-  endgameEl.appendChild(gameOverText);
-
+  createTextElement("h1", "GAME OVER!", endgameEl);
   // /Adds a h3 element with text displaying score
-  var scoreText = document.createElement("h3");
-  scoreText.appendChild(document.createTextNode("Your Score is : " + score));
-  endgameEl.appendChild(scoreText);
+  createTextElement("h3", "Your Score is : ", endgameEl);
+  createTextElement("h3", score, endgameEl);
 
-  // Adds a restart button to reload the game
-  var button = document.createElement("button");
-  button.innerText = "Restart Game!";
-  button.className = "restartBtn";
-
-  button.autofocus = true;
+  var button = createButton("Restart Game", "restartBtn", true, endgameEl);
   button.onclick = function () {
     location.reload();
   };
-  endgameEl.appendChild(button);
 }
+
 
 /***
  * Decreases time by 1 s every second
@@ -231,6 +220,38 @@ function updateTime() {
   }
 }
 
+//Function to create button
+function createButton(btnName, btnClassName, btnAutoFocus, node) {
+  var button = document.createElement("button");
+  button.innerText = btnName;
+  button.className = btnClassName;
+
+  button.autofocus = btnAutoFocus;
+  node.appendChild(button);
+  return button;
+}
+//Function to create text element
+function createTextElement(elName, elText, node) {
+  var text = document.createElement(elName);
+  text.appendChild(document.createTextNode(elText));
+  node.appendChild(text);
+
+}
+
+/**
+ *
+ * Event listener keypress to fire the function updateScore()
+ */
+
+text.addEventListener("keypress", function (event) {
+  // If the user presses the "Enter" key on the keyboard
+  if (event.key === "Enter") {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    updateScore();
+  }
+});
+
 // Event listener for button click to display settings container
 settingsBtn.addEventListener("click", displaySetting);
 function displaySetting() {
@@ -242,8 +263,9 @@ function displaySetting() {
  * Event listener keypress to fire the function updateScore()
  */
 
-difficultySelect.addEventListener("change", function (event) {
-  console.log(difficultySelect.value);
+difficultySelect.addEventListener("change", function () {
+  level = difficultySelect.value;
+  settings.classList.toggle("hide");
   addWordToDOM();
 }
 );

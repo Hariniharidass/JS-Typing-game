@@ -23,13 +23,12 @@ button {
 }
 
 .restartBtn {
-  margin-top: 20px;
   cursor: pointer;
   font-size: 32px;
   border-radius: 5px;
   padding: 5px 15px;
   width: 400px;
-  height: 100px;
+  height: 90px;
   background-color: #ffde17;
   color: #6026ff;
 }
@@ -70,7 +69,7 @@ button:focus {
   transition: transform 0.3s ease-in-out;
 }
 
-.hide {
+.settings.hide {
   transform: translateY(-100%);
   display: none;
 }
@@ -91,6 +90,21 @@ button:focus {
   position: relative;
   text-align: center;
   width: 500px;
+  display: block;
+}
+
+.block {
+  width: 70%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.hide {
+  display: none;
 }
 
 h2 {
